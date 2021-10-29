@@ -30,7 +30,7 @@ func Fini() {
 func NewDecoder(opts ...Option) (*Decoder, error) {
 	p := C.de265_new_decoder()
 	if p == nil {
-		return nil, fmt.Errorf("Unable to create decoder")
+		return nil, fmt.Errorf("unable to create decoder")
 	}
 
 	dec := &Decoder{ctx: p, hasImage: false}
@@ -68,14 +68,14 @@ func (dec *Decoder) Push(data []byte) error {
 	totalSize := len(data)
 	for pos < totalSize {
 		if pos+4 > totalSize {
-			return fmt.Errorf("Invalid NAL data")
+			return fmt.Errorf("invalid NAL data")
 		}
 
 		nalSize := uint32(data[pos])<<24 | uint32(data[pos+1])<<16 | uint32(data[pos+2])<<8 | uint32(data[pos+3])
 		pos += 4
 
 		if pos+int(nalSize) > totalSize {
-			return fmt.Errorf("Invalid NAL size: %d", nalSize)
+			return fmt.Errorf("invalid NAL size: %d", nalSize)
 		}
 
 		C.de265_push_NAL(dec.ctx, unsafe.Pointer(&data[pos]), C.int(nalSize), C.de265_PTS(0), nil)
@@ -163,5 +163,5 @@ func (dec *Decoder) DecodeImage(data []byte) (image.Image, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("No picture")
+	return nil, fmt.Errorf("no picture")
 }
