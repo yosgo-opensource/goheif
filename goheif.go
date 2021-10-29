@@ -48,12 +48,12 @@ func newGridBox(data []byte) (*gridBox, error) {
 
 func decodeHevcItem(dec *libde265.Decoder, hf *heif.File, item *heif.Item) (*image.YCbCr, error) {
 	if item.Info.ItemType != "hvc1" {
-		return nil, fmt.Errorf("Unsupported item type: %s", item.Info.ItemType)
+		return nil, fmt.Errorf("unsupported item type: %s", item.Info.ItemType)
 	}
 
 	hvcc, ok := item.HevcConfig()
 	if !ok {
-		return nil, fmt.Errorf("No hvcC")
+		return nil, fmt.Errorf("no hvcC")
 	}
 
 	hdr := hvcc.AsHeader()
@@ -71,7 +71,7 @@ func decodeHevcItem(dec *libde265.Decoder, hf *heif.File, item *heif.Item) (*ima
 
 	ycc, ok := tile.(*image.YCbCr)
 	if !ok {
-		return nil, fmt.Errorf("Tile is not YCbCr")
+		return nil, fmt.Errorf("tile is not YCbCr")
 	}
 
 	return ycc, nil
@@ -97,11 +97,11 @@ func Decode(r io.Reader) (image.Image, error) {
 
 	width, height, ok := it.SpatialExtents()
 	if !ok {
-		return nil, fmt.Errorf("No dimension")
+		return nil, fmt.Errorf("no dimension")
 	}
 
 	if it.Info == nil {
-		return nil, fmt.Errorf("No item info")
+		return nil, fmt.Errorf("no item info")
 	}
 
 	dec, err := libde265.NewDecoder(libde265.WithSafeEncoding(SafeEncoding))
@@ -114,7 +114,7 @@ func Decode(r io.Reader) (image.Image, error) {
 	}
 
 	if it.Info.ItemType != "grid" {
-		return nil, fmt.Errorf("No grid")
+		return nil, fmt.Errorf("no grid")
 	}
 
 	data, err := hf.GetItemData(it)
@@ -129,11 +129,11 @@ func Decode(r io.Reader) (image.Image, error) {
 
 	dimg := it.Reference("dimg")
 	if dimg == nil {
-		return nil, fmt.Errorf("No dimg")
+		return nil, fmt.Errorf("no dimg")
 	}
 
 	if len(dimg.ToItemIDs) != grid.columns*grid.rows {
-		return nil, fmt.Errorf("Tiles number not matched")
+		return nil, fmt.Errorf("tiles number not matched")
 	}
 
 	var out *image.YCbCr
@@ -159,7 +159,7 @@ func Decode(r io.Reader) (image.Image, error) {
 			}
 
 			if tileWidth != rect.Dx() || tileHeight != rect.Dy() {
-				return nil, fmt.Errorf("Inconsistent tile dimensions")
+				return nil, fmt.Errorf("inconsistent tile dimensions")
 			}
 
 			// copy y stride data
@@ -202,7 +202,7 @@ func DecodeConfig(r io.Reader) (image.Config, error) {
 
 	width, height, ok := it.SpatialExtents()
 	if !ok {
-		return config, fmt.Errorf("No dimension")
+		return config, fmt.Errorf("no dimension")
 	}
 
 	config = image.Config{
